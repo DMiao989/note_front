@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>promise的几个关键问题</title>
+</head>
+<body>
+    <script>
+
+
+        //常规的写法：先指定回调，然后改变状态（同时指定数据），最后异步执行回调函数
+        new Promise((resolve, reject) => { 
+            setTimeout(() => {
+                resolve(1) //后改变的状态（同时指定数据），异步执行回调函数
+            }, 10000);
+        }).then(        //先指定回调函数，保存当前指定的回调函数
+            value => {
+                console.log(value)
+            },
+            reason => {
+                console.log("reason", reason)
+            }
+        )
+
+
+        //写法1： 先改变状态（同时指定数据）， 然后指定回调函数，异步执行回调函数
+        new Promise((resolve, reject) => {
+                resolve(1) //先改变状态（同时指定数据）
+        }).then(//后指定回调函数，异步执行回调函数
+            (value) => {console.log("value" + value)},
+            (reason) => {console.log("reason" + reason)}
+        )
+
+
+        //写法2： 先改变状态（同时指定数据）， 然后指定回调函数，异步执行回调函数
+        const p = new Promise((resolve, reject) => {
+            setTimeout(() => { //先改变状态（同时指定数据）
+                resolve(1)
+            }, 1000);
+        })
+
+        setTimeout(() => { //通过添加定时器，后指定回调函数，异步执行回调函数
+            p.then(
+                value => {console.log("value", value)}
+            )
+        }, 3000);
+
+
+
+    </script>
+</body>
+</html>

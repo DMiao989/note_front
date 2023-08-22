@@ -1,0 +1,521 @@
+# 若依（前后端分离）-开源项目
+
+##### 2、配置数库MySQL、Reids
+
+​		本地执行SQL脚本
+
+​		在工程中配置数据库 
+
+​		Redis配置
+
+​		检查jdk的版本：java -version或者ls /Library/Java/JavaVirtualMachines/
+
+​		删除jdk：ls /Library/Java/JavaVirtualMachines/要删除的jdk版本名称
+
+##### 3、安装前端依赖
+
+##### 4、登录
+
+​	-生验证码
+
+基本思路：后端生成一个表达式，1+1=2
+
+1+1=？@2
+
+1+1=？转成图片，传到前端进行展示；
+
+2存入Reids
+
+http://localhost/login?redirect=/index前端
+
+Vue获取图片，前端还是后端？
+
+反向代理，url请求前端，进行代理，映射到后端，解决跨域问题。
+
+
+
+# Vue-cli
+
+使用脚手架创建项目的步骤：
+
+1. 全局安装脚手架，打开电脑的终端cmd，然后输入以下命令：
+
+   npm install -g @vue/cli
+
+2. 在桌面新建一个文件夹，作为创建项目的目录
+
+3. 切换到你要创建项目的目录，然后使用命令创建项目：vue create 项目名称
+
+node_modules文件：存放所有的第三方库
+
+public文件：
+
+
+
+src文件：
+
+src/main.js文件：运行完npm run serve 之后程序就进入该文件
+
+<img src="/Users/dingmiao/Library/Application Support/typora-user-images/image-20230713132436471.png" alt="image-20230713132436471" style="zoom:50%;" />
+
+src/assets文件：存放静态资源文件，比如说图片啥的
+
+src/components文件：存放除了App.vue之外的所有文件
+
+src/App.vue文件：父组件，是所有子组件中的老大
+
+https://blog.csdn.net/weixin_39332529/article/details/106978074?ydreferer=aHR0cHM6Ly9jbi5iaW5nLmNvbS8%3D
+
+
+
+
+
+
+
+# MySql
+
+##### DB:数据库（Database）
+
+即存书数据的仓库，其本质是一个文件系统，它保存了一系列有组织的数据
+
+##### DBMS：数据库管理系统（Database Mangement System）
+
+是一种操作和管理数据库的大型软件，用于建立、使用和维护数据库，对数据库进行统一管理和控制。用户通过数据库管理系统访问数据库中表内的数据。
+
+​	关系型数据库管理系统- RDBMS
+
+​	非关系型数据库管理系统 - 非RDBMS 例如：键值型数据库。。。。
+
+##### SQL：结构化查询语言（Structured Query Language）
+
+专门用来于数据库通信的语言
+
+# maven 项目管理工具
+
+##### maven是一款服务于java 平台的自动化构建工具，可以对java项目进行构建、依赖管理
+
+##### maven功能：
+
+###### 	构建：把动态的web工程经过编译得到的编译结果部署到服务器上的整个过程。
+
+​	文档生成：
+
+​	报告：
+
+​	引来
+
+​	SCMs
+
+​	发布
+
+​	分发
+
+​	邮件列表
+
+
+
+# Session Cookie Cache Token的区别是什么？
+
+## session：
+
+### session是什么？
+
+在网络应用中，称为“会话控制”。
+
+Session对象**存储特定用户会话所需要的属性及配置信息。**
+
+会话：指一个终端用户与交互系统进行通讯的过程，比如从输入账户密码进入操作系统到退出系统就是一个会话过程。TCP三次握手就是建立一个会话。
+
+Session对应的类为javax.[servlet](https://so.csdn.net/so/search?q=servlet&spm=1001.2101.3001.7020).http.HttpSession类。每个来访者对应一个Session对象，所有该客户的状态信息都保存在这个Session对象里。Session对象是在客户端第一次请求服务器的时候创建的。
+
+### session的作用是什么？
+
+Session保存**在服务器上**。客户端浏览器 访问 服务器的时候，服务器把**客户端信息以某种形式记录在服务器上**。这就是Session。客户端浏览器**再次访问时**只需要从该Session中查找该客户的状态就可以了
+
+### session的创建时间？
+
+当JSP页面没有显式禁止session的时候，在打开浏览器第一次请求该jsp的时候，服务器会自动为其创建一个session，并赋予其一个sessionID，发送给客户端的浏览器。以后客户端接着请求本应用中其他资源的时候，会自动在**请求头上添加：**
+**Cookie:JSESSIONID=客户端第一次拿到的session ID**
+服务器接收到请求后就得到该请求的sessionID，服务器找到该id的session返还给请求者（Servlet）使用。一个会话只能有一个session对象，对session来说是只认id不认人。
+
+当多个客户端执行程序时，服务器会保存多个客户端的Session。获取Session的时候也不需要声明获取谁的Session。Session机制决定了当前客户只会获取到自己的Session，而不会获取到别人的Session。各客户的Session也彼此独立，互不可见。
+
+
+### session的有效期？
+
+**Session超时**：超时指的是连续一定时间服务器没有收到该Session所对应客户端的请求，并且这个时间超过了服务器设置的Session超时的最大时间。由于会有越来越多的用户访问服务器，因此Session也会越来越多。为防止内存溢出，服务器会把长时间内没有活跃的Session从内存删除。这个时间就是Session的超时时间。如果超过了超时时间没访问过服务器，Session就自动失效了。
+Session的超时时间为maxInactiveInterval属性，可以通过对应的getMaxInactiveInterval()获取，通过setMaxInactiveInterval(longinterval)修改。
+Session的超时时间也可以在web.xml中修改。另外，通过调用Session的invalidate()方法可以使Session失效
+
+程序调用HttpSession.invalidate()
+
+服务器关闭或服务停止
+
+## Cookie：
+
+##### 什么是cookie？
+
+Cookie实际上是一小段的文本信息。客户端请求服务器，**如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie**。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址连同该Cookie一同提交给服务器。服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。
+
+##### cookie的作用？
+
+- **自动登录**:Cookie是当你浏览某网站时，网站存储在你机器上的一个小文本文件，它记录了你的用户ID，密码、浏览过的网页、停留的时间等信息，当你再次来到该网站时，网站通过读取Cookie，得知你的相关信息，就可以做出相应的动作，如在页面显示欢迎你的标语，或者让你不用输入ID、密码就直接登录等等。
+- **进行统计**:网站利用Cookies跟踪统计用户访问该网站的习惯，做出自己的服务调整。一方面是方便为用户提供个性化的服务，另一方面，也可以为网站经营策略带来创新，就如同不记名的问卷调查。
+
+##### cookie的有效期？
+
+Cookie的maxAge决定着Cookie的有效期，单位为秒（Second）。Cookie中通过getMaxAge()方法与setMaxAge(int maxAge)方法来读写maxAge属性。如果maxAge属性为正数，则表示该Cookie会在maxAge秒之后自动失效。浏览器会将maxAge为正数的Cookie持久化，即写到对应的Cookie文件中。无论客户关闭了浏览器还是电脑，只要还在maxAge秒之前，登录网站时该Cookie仍然有效。
+
+
+## Cache：
+
+##### 什么是cache？
+
+缓存是一个到处都存在的用空间换时间的例子。通过使用多余的空间，我们能够获取更快的速度。用户在浏览网站的时候，浏览器能够在本地保存网站中的图片或者其他文件的副本，这样用户再次访问该网站的时候，浏览器就不用再下载全部的文件，减少了下载量意味着提高了页面加载的速度.
+
+缓存非常有用，但是也带来了一定的缺陷。当我们的网站发生了更新的时候，如果我们还是从缓存中获取的话就不能进行实时更新.
+
+##### 如何使用cache？
+
+上一篇我们讲了HTTP协议,我们在里面可以看到不管是Request还是Response都有一个叫Cache-control,我们可以通过设置它来进行缓存.另外,还有几个属性也可以设置缓存.
+
+If-Modified-Since
+作用： 把浏览器端缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件的最后修改时间进行对比。如果时间一致，那么返回304，客户端就直接使用本地缓存文件。如果时间不一致，就会返回200和新的文件内容。客户端接到之后，会丢弃旧文件，把新文件缓存起来，并显示在浏览器中.
+例如：If-Modified-Since: Thu, 09 Feb 2012 09:07:57 GMT
+
+Expires
+Expires实体报头域给出响应过期的日期和时间。为了让代理服务器或浏览器在一段时间以后更新缓存中(再次访问曾访问过的页面时，直接从缓存中加载，缩短响应时间和降低服务器负载)的页面，我们可以使用Expires实体报头域指定页面过期的时间。eg：Expires：Thu，15 Sep 2006 16:23:12 GMT
+
+If-None-Match
+作用: If-None-Match和ETag一起工作，工作原理是在HTTP Response中添加ETag信息。 当用户再次请求该资源时，将在HTTP Request 中加入If-None-Match信息(ETag的值)。如果服务器验证资源的ETag没有改变（该资源没有更新），将返回一个304状态告诉客户端使用本地缓存文件。否则将返回200状态和新的资源和Etag. 使用这样的机制将提高网站的性能
+例如: If-None-Match: “03f2b33c0bfcc1:0”
+
+##### cache的有效期？
+
+我们可以给Cache-control max-age 设置Cache的有效期,当过了这个时间,客户端将重新从服务器获取最新的资源
+
+## Token：
+
+##### Token是什么？
+
+token就是令牌，比如你授权（登录）一个程序时，他就是个依据，判断你是否已经授权该软件.
+**当客户端请求页面时，服务器会生成一个随机数Token，并且将Token放置到session当中，然后将Token发给客户端（一般通过构造hidden表单）。**下次客户端提交请求时，Token会随着表单一起提交到服务器端。
+
+##### Token的作用？
+
+- 防止表单重复提交、
+
+- anti csrf攻击（跨站点请求伪造）
+
+  两者在原理上都是通过session token来实现的。当客户端请求页面时，服务器会生成一个随机数Token，并且将Token放置到session当中，然后将Token发给客户端（一般通过构造hidden表单）。下次客户端提交请求时，Token会随着表单一起提交到服务器端。
+  然后，如果应用于“anti csrf攻击”，则服务器端会对Token值进行验证，判断是否和session中的Token值相等，若相等，则可以证明请求有效，不是伪造的。
+  不过，如果应用于“防止表单重复提交”，服务器端第一次验证相同过后，会将session中的Token值更新下，若用户重复提交，第二次的验证判断将失败，因为用户提交的表单中的Token没变，但服务器端session中Token已经改变了。
+
+  上面的session应用相对安全，但也叫繁琐，同时当多页面多请求时，必须采用多Token同时生成的方法，这样占用更多资源，执行效率会降低。
+
+  **因此，也可用cookie存储验证信息的方法来代替session Token。比如，应对“重复提交”时，当第一次提交后便把已经提交的信息写到cookie中，当第二次提交时，由于cookie已经有提交记录，因此第二次提交会失败。**
+  不过，cookie存储有个致命弱点，如果cookie被劫持（xss攻击很容易得到用户cookie），那么又一次gameover。黑客将直接实现csrf攻击。
+
+## Session ID 和Token的区别？
+
+登出是指客户端主动退出登录状态。容易想到的方案是，客户端登录成功后， 服务器为其分配sessionId, 客户端随后每次请求资源时都带上sessionId。
+服务器判断用户是否登录， 完全依赖于sessionId, 一旦其被截获， 黑客就能够模拟出用户的请求。于是我们需要引入token的概念： 用户登录成功后， 服务器不但为其分配了sessionId, 还分配了token， token是维持登录状态的关键秘密数据。在服务器向客户端发送的token数据，也需要加密。于是一次登录的细节再次扩展。
+客户端向服务器第一次发起登录请求（不传输用户名和密码）。
+服务器利用RSA算法产生一对公钥和私钥。并保留私钥， 将公钥发送给客户端。
+客户端收到公钥后， 加密用户密码，向服务器发送用户名和加密后的用户密码； 同时另外产生一对公钥和私钥，自己保留私钥, 向服务器发送公钥； 于是第二次登录请求传输了用户名和加密后的密码以及客户端生成的公钥。
+服务器利用保留的私钥对密文进行解密，得到真正的密码。 经过判断， 确定用户可以登录后，生成sessionId和token， 同时利用客户端发送的公钥，对token进行加密。最后将sessionId和加密后的token返还给客户端。
+客户端利用自己生成的私钥对token密文解密， 得到真正的token。
+
+## Session和Cookie的区别？
+
+Cookie和Session都是为了**保存客户端和服务端之间的交互状态**，实现机制不同，各有优缺点。
+
+首先一个最大的区别就是**Cookie是保存在客户端**而**Session就保存在服务端的**。Cookie是客户端请求服务端时服务器会将一些信息以键值对的形式返回给客户端，保存在浏览器中，交互的时候可以加上这些Cookie值。用Cookie就可以方便的做一些缓存。Cookie的缺点是大小和数量都有限制；Cookie是存在客户端的可能被禁用、删除、篡改，是不安全的；Cookie如果很大，每次要请求都要带上，这样就影响了传输效率。
+
+Session是基于Cookie来实现的，不**同的是Session本身存在于服务端**，但是每次传输的时候不会传输数据，只是把代表一个客户端的唯一ID（通常是JSESSIONID）写在客户端的Cookie中，这样每次传输这个ID就可以了。Session的优势就是传输数据量小，比较安全。但是Session也有缺点，就是如果Session不做特殊的处理容易失效、过期、丢失或者Session过多导致服务器内存溢出，并且要实现一个稳定可用安全的分布式Session框架也是有一定复杂度的。在实际使用中就要结合Cookie和Session的优缺点针对不同的问题来设计解决方案。
+
+换句话说,如果说Cookie机制是通过检查客户身上的“通行证”来确定客户身份的话，那么Session机制就是通过检查服务器上的“客户明细表”来确认客户身份。Session相当于程序在服务器上建立的一份客户档案，客户来访的时候只需要查询客户档案表就可以了。
+
+
+
+## File-saver 用法
+
+https://blog.csdn.net/weixin_44867717/article/details/128168002
+
+# vuex
+
+<img src="/Users/dingmiao/Library/Application Support/typora-user-images/image-20230712145953984.png" alt="image-20230712145953984" style="zoom:50%;" />
+
+##### 1.什么是vuex？
+
+概念：专门在vue中实现集中式**状态（数据**）管理的一个Vue插件，对vue用用中多个组件的**共享状态**进行集中式的管理（读/写），也是一种组件间的通信方式，且适用于任意组件间通信。
+
+##### 2.什么时候使用vuex？
+
+1. 多个组件依赖于同一个状态
+2. 来自不同组件的行为需要变更同一状态
+
+
+
+##### 3.vuex的原理图
+
+<img src="/Users/dingmiao/Library/Application Support/typora-user-images/image-20230712151748408.png" alt="image-20230712151748408" style="zoom:50%;" />
+
+<img src="/Users/dingmiao/Library/Application Support/typora-user-images/image-20230712152012100.png" alt="image-20230712152012100" style="zoom:50%;" />
+
+vue component 相当于 客人
+
+Actions 相当于 服务员
+
+Mutations 相当于 后厨
+
+State 相当于 菜
+
+​	客人来点菜 
+
+- ​		要告诉服务员要点的菜 store.dispatch("jia", 2)
+
+- ​		服务员告诉后厨客人要点的菜 store.commit("jia",2)
+
+- ​		后厨做菜mutate
+
+- ​		菜上给客人render
+
+  或者客人直接告诉后厨要做的菜
+
+  **Actions、Mutations、State都是对象{}**
+
+  **dipatch、commit都是由store管理，store是配置项，只use(vuex）在vm身上才可以有store配置项，才可以使用  **
+
+![image-20230712153556772](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230712153556772.png)
+
+##### 4.搭建vuex环境
+
+1. 创建文件：**src/store/index.js**
+
+```javascript
+//引入Vue核心库
+import Vue from 'vue'
+//引入Vuex
+import Vuex from 'vuex'
+//应用Vuex插件
+Vue.use(Vuex)
+
+//准备actions对象---响应组件中用户的动作
+const actions = {}
+//准备mutations对象---修改state中的数据
+const mutations = {}
+//准备state对象---保存具体的数据
+const state = {}
+
+//创建并暴露store
+export default new Vuex.Store({
+  actions,
+  mutations,
+  state
+})
+```
+
+2.在**main.js**中创建vm时传入**store配置项**
+
+```javascript
+//引入store
+import store from './store/index.js'
+
+//创建vm
+new Vue({
+	el:"#app",
+	render:h => h(App),
+	store
+})
+```
+
+##### 5.vuex基本使用
+
+```javascript
+//引入Vue核心库
+import Vue from 'vue'
+//引入Vuex
+import Vuex from 'vuex'
+//应用Vuex插件
+Vue.use(Vuex)
+
+//准备actions对象---响应组件中用户的动作
+const actions = {
+  //响应组件中”加“的动作
+  jia(context, value){
+    //console.log('actions中的jia被调用了'，miniStore, value)
+    context.commit('JIA', value)
+  }
+}
+//准备mutations对象---修改state中的数据
+const mutations = {
+  //执行加
+  JIA(state, value){
+    //cosole.log('actions中的jia被调用了'， miniStore，value)
+    state.sum += value
+  }
+}
+//准备state对象---保存具体的数据
+const state = {
+  //初始化数据
+  num = 0 
+}
+
+//创建并暴露store
+export default new Vuex.Store({
+  actions,
+  mutations,
+  state
+})
+```
+
+2.组件中读取vuex中的数据：
+
+```javascript
+$store.state.sum
+模版中不用加this
+js中需要加this
+```
+
+3.组件中修改vuex中的数据
+
+```javascript
+$store.dispatch('action中的方法名',数据)
+或
+$store.commit('mutations中的方法名',数据)
+```
+
+**备注：若没有网络请求或者其他业务逻辑，组件中也可以越过actions，即不写dispatch, 直接编写commit**
+
+#####  6.getters的基本使用
+
+<img src="/Users/dingmiao/Library/Application Support/typora-user-images/image-20230712175603193.png" alt="image-20230712175603193" style="zoom:50%;" />
+
+概念：当state中的数据需要经过加工后再使用时，可以使用getters加工
+
+在store.js中追加getters配置
+
+```javascript
+const getters = {
+  bigSum(state){
+		return state.sum * 10
+  }
+}
+
+//创建并暴露store
+export default new Vuex.Store({
+  ....
+  getters
+})
+```
+
+组件中读取数据：
+
+```javascript
+$store.getters.bigSum
+```
+
+#####  7.四个map方法的使用
+
+1.mapState方法：用于帮助我们映射state中的数据为计算属性
+
+# 组合式API：
+
+https://blog.csdn.net/u011068996/article/details/111337403
+
+# Ref
+
+## Ref在vue2 中的使用
+
+在`vue2.x`中，可以通过给元素添加`ref='xxx'`属性，然后在代码中通过`this.$refs.xxx`获取到对应的元素
+
+```html
+<ul>
+  <li v-for="(item, index) in list" ref="fruits" :key="index">
+    {{ item }}
+  </li>
+</ul>
+<button @click="handleClick">点击</button>
+```
+
+```javascript
+methods: {
+  handleClick () {
+    const fruits = this.$refs.fruits
+    console.log(fruits[1].innerHTML)
+  }
+}
+// 批量绑定同名的ref （主要就是v-for场景中使用 ref）,此时通过[this.$refs.名称]访问的值应该是一个数组，数组中包含每一个DOM元素
+// ref绑定组件的用法与之类似
+
+```
+
+
+
+vue2 中可以通过ref直接操作单个dom和组件` this.$refs.info.innerHTML`
+
+Vue2中可以批量通过ref操作DOM和组件` this.$ref.fruit[0].innerHTML`
+
+
+
+## Ref在vue3中的使用
+
+在`vue3`中时没有`$refs`这个东西的，因此`vue3`中通过`ref`属性获取元素就不能按照`vue2`的方式来获取。
+
+```javascript
+<template>
+  <div>
+    <div>ref操作DOM和组件</div>
+    <hr>
+    <!-- 3、模板中绑定上述返回的数据 -->
+    <div ref='info'>hello</div>
+    <!-- <my-com ref='info'>hello</my-com> -->
+    <ul>
+      <li ref='fruit' v-for='item in fruits' :key='item.id'>{{item.name}}
+        </li>
+    </ul>
+    <button @click='handleClick'>点击</button>
+  </div>
+</template>
+
+<script>
+import { ref } from 'vue'
+
+export default {
+  name: 'App',
+  setup () {
+    // Vue3中通过ref操作DOM
+    // 1、定义一个响应式变量
+    const info = ref(null)
+
+    const fruits = ref([{
+      id: 1,
+      name: 'apple'
+    }, {
+      id: 2,
+      name: 'orange'
+    }])
+
+    const handleClick = () => {
+      // 4、此时可以通过info变量操作DOM
+      console.log(info.value.innerHTML)
+    }
+
+    // 2、把变量返回给模板使用
+    return { fruits, info, handleClick }
+  }
+}
+</script>
+
+<style lang="less">
+</style>
+
+```
+
+**总结：操作单个DOM或者组件的流程**
+
+1. 定义一个响应式变量
+2. 把变量返回给模板使用
+3. 模板中绑定上述返回的数据
+4. 可以通过info变量操作DOM或者组件实例

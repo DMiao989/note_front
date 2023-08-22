@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax请求</title>
+</head>
+<body>
+    <h2>Promise 封装Ajax请求</h2>        
+    <button class="btn btn-primary" id="btn"> 点击发送AJAX</button>
+
+    <script>
+        // 接口地址：
+        // 获取dom
+        const btn = document.getElementById("btn")
+
+        // 绑定事件
+        btn.addEventListener('click', () => {
+            //1.创建xhr对象
+            const xhr = new XMLHttpRequest()
+            //2.初始化
+            console.log(xhr)
+            xhr.open('GET', 'http://127.0.0.1:8000/mine')
+            //3.发送请求
+            xhr.send()
+            //4.处理响应的结果
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4){
+                    //判断响应状态码
+                    if (xhr.status >= 200 && xhr.status < 300 ){
+                        //控制台输出响应体
+                        console.log(xhr.response)
+                    }else{
+                        //控制台输出响应状态码
+                        console.log(xhr.status)
+                    }
+                }
+            }
+        })
+                                                                                                                                                                                                                                                                                                                                                                                                      
+    </script>
+</body>
+</html>

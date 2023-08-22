@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise 的API的使用</title>
+</head>
+<body>
+    <script>
+        new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('成功的状态')
+                // reject('失败的数据') 成功的数据和失败的数据只能执行一次，因为Promise的状态只能给改变一次
+            }, 1000);
+        }).then(
+            (value) => {console.log("成功的回调 onresolved()" + value)}
+        ).catch(
+            (reason) => {console.log("失败的回调 onrejected()" + reason)}
+        )
+
+
+
+
+        //产生一个成功值为1的promise对象
+        const p1 = new Promise((resolve, reject) => {
+            resolve(1)
+        })
+        // 产生一个成功值为2的promise对象
+        const p2 = Promise.resolve(2) //Promise的语法糖
+        // 产生一个失败值为3的promise对象
+        const p3 = Promise.reject(3)
+        const p4 = Promise.reject(4)
+
+        // p1.then(value => {console.log(value)}) //1
+        // p2.then(value => {console.log(value)}) //2
+        // p3.catch(reason => {console.log(reason)}) //3
+
+
+        // const pAll = Promise.all([p1, p2, p3, p4])
+        // pAll.then(
+        //     values => {
+        //         cosnole.log("all onResolved()", values)
+        //     },
+        //     reason => {
+        //         console.log("all onRejected()",reason) //3，最先失败的promise的失败原因，p3的reason
+        //     }                                          //注意不是p3 和 p4 的reason
+        // )
+
+
+        // const pAll1 = Promise.all([p1, p2])
+        // pAll1.then(
+        //     values => {
+        //         console.log("all onRsolved", values) //[1, 2] 返回所有成功的promise的值，是个数组
+        //     },
+        //     reason => {
+        //         console.log("all onRejected", reason)
+        //     }
+        // )
+
+
+
+
+        const pRace = Promise.race([p1, p2, p3])
+        pRace.then(
+            value => {
+                console.log("race onResolved",value) // 1 第一个成功的promise的值
+            },
+            reason => {
+                console.log("race onRejected",reason) // 4 第一个失败的promise的值
+            }
+        )
+
+
+
+
+    </script>
+</body>
+</html>

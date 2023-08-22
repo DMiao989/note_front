@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题5</title>
+</head>
+<body>
+    <!-- 
+        ##### 6.promise异常穿透？
+        ​	（1）当使用promise的then链式调用时，可以在最后指定失败的回调
+        ​	（2）前面任何操作出了异常，都会传到最后失败的回调中处理。
+        ##### 7.中断promise链？
+    ​	    （1）当使用promise的then链式调用时，可以在最后指定失败的回调，
+    ​	    （2）办法：在回调函数中返回一个pending状态的promise对象。（因为then中回调只有在promise的状态改变的时候才会执行）
+     -->
+    <script>
+         new Promise((resolve, reject) => {
+            resolve(3)
+            // reject(3)  //在promise中，通过reject()函数，改变promise的状态为rejected
+         }).then(
+            value => {
+                console.log('onResolved1()',value)
+                throw 1  //在then()的onrejected()函数中，通过抛出错误，产生一个新的 rejected 1 的promise
+            }
+         ).then(
+            value => {
+                console.log('onResolved2()', value)
+            },
+            // reason => {
+            //     throw reason // 在then()的onRejected()函数中，通过抛出reason，产生一个新的 rejected reason的promise
+            // }
+         ).then(
+            value => {
+                console.log("onResolved3()", value)  
+            },
+            // reason => { //在then()的onRejected()函数中，通过返回Promise.reject(reason)，产生一个新的 rejected reason的promise
+            //     return Promise.reject(reason)
+            // }
+
+            // 简写为
+            // reason => Promise.reject(reason)
+         ).catch(
+            reason => {
+                console.log('onRejected4()', reason)
+            }
+         )
+    </script>
+</body>
+</html>

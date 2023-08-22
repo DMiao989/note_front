@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>then的结果</title>
+</head>
+<body>
+    <script>
+        new Promise((resolve, reject) => {
+            resolve(1)
+            // reject(2) 
+        }).then(
+            value => {
+                console.log('第一个then的结果onResolved1',value)
+                return Promise.reject(4)
+                // return Promise.resolve(3)
+                // throw 2
+            },
+            reason => {
+                console.log('第一个then的结果onRejected1' , reason)
+            }
+        ).then(
+            value => {
+                console.log("第二个then的结果onResolved2", value)
+            },
+            reason => {
+                console.log('第二个then的结果onRejected2' , reason)
+            }
+        )
+    </script>
+</body>
+</html>

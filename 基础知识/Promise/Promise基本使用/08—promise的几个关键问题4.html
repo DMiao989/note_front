@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题4</title>
+</head>
+<body>
+    <!-- 
+        5. promise如何串联多个操作任务？
+            （1）promise的then()返回一个新的promise，可以改成then()的链式调用；
+            （2）通过then的链式调用串联多个同步/异步任务
+     -->
+    <script>
+        // 通过promise实现多个任务的操作
+        // 启动异步任务1
+        new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log("执行异步任务1")
+                resolve(1) //一个 新的 状态为resolved 值为1 的promise
+            }, 1000);
+        }).then(
+            value => {
+                console.log('任务1的执行结果：', value)
+                // 启动同步任务2
+                console.log('执行同步任务2')
+                return 2 // then()的执行结果为 一个新的 状态为resolved 值为2 的promise
+            }
+        ).then(
+            value => {
+                console.log('任务2的执行结果：', value)
+                return new Promise((resolve, reject) => {
+                    // 启动任务3
+                    setTimeout(() => {
+                        console.log('执行异步任务3')
+                        reject(3)
+                    }, 2000);
+                })
+            }
+        ).then(
+            value => {},
+            reason => {
+                console.log('任务3的执行结果', reason)
+            }
+        )
+
+    </script>
+</body>
+</html>

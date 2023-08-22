@@ -1,0 +1,1580 @@
+# keep-alive的使用方法
+
+## Keep-Alive是一个通用消息头
+
+作用：
+
+1. 允许发送消息者暗示连接状态
+2. 设置超时时间和最大请求数
+
+参数： 
+
+1. timeout：指定一个空闲连接需要保持打开状态的最小时长；
+2. max： 在连接关闭之前，在此连接可以发送的请求的最大值
+
+![image-20230717230335987](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230717230335987.png)
+
+## **<KeepAlive>**组件
+
+<KeepAlive>组件是一个内置组件
+
+功能：在多个组件间动态切换时，缓存被移除的组件实例 
+
+区别于 <component>组件：<component :is="...">可以实现在多个组件间作切换，但是切换的时候，被切换掉的组件会被卸载，这样会导致切换后组件就被初始化了，即状态被重置了，这会导致我们在进行页面设计的时候，来回切换页面之后，原来的页面需要重新载入，体验感不好。其中 :is 的值可以是 被注册的组件名/导入的组件对象。
+
+![img](https://pic4.zhimg.com/v2-490aa6e876aa22ccdad4eb333c269df3_b.gif?consumer=ZHI_MENG)
+
+
+
+
+
+
+
+
+
+# 7月18日：
+
+- **table-columns遍**历：根据官网文档中得**各种api**对不同的列进行不同的配置
+- 完成功能，**新增保存刷新列表**
+     在这个功能基础上，详细了解**<u>el-input</u>，el-select，el-date-picke**r的使用方法
+
+##### el-input 组件
+
+https://element.eleme.cn/#/zh-CN/component/input
+
+```javascript
+<template>
+  <div>
+    <!-- 
+        input输入框：通过鼠标或键盘输入字符；
+        input是受控组件，他总会显示vue绑定值；
+        通常情况下，应当处理input事件，并更新组件的绑定值（或使用v-model）。
+        否则，输入框内显示的值将不会改变
+        @change 事件比较奇特 
+
+    -->
+    <div>
+      <!-- 基本用法 -->
+      <el-input v-model="input" placeholder="请输入内容" @blur="lostfocus" @focus="getfocus"> </el-input>
+      
+    </div>
+    <div>
+        <el-input v-model="input" placeholder="请输入内容" @change="stateChange"  ></el-input>
+        <el-input v-model="input" placeholder="请输入内容" @input="changeOnInput"></el-input>
+        <el-input v-model="input" placeholder="请输入内容" focus> </el-input>
+    </div>
+
+    <div>
+      <!-- 禁用状态 -->
+      <el-input v-model="input" placeholder="请输入内容" :disabled="true"></el-input>
+      <el-input v-model="input" placeholder="请输入内容" disabled></el-input>
+    </div>
+
+    <div>
+      <!-- 可清空 -->
+      <el-input v-model="input" placeholder="请输入内容" clearable> </el-input>
+    </div>
+
+    <div>
+      <!-- 密码框 -->
+      <el-input
+        v-model="input"
+        placeholder="请输入密码"
+        show-password
+      ></el-input>
+    </div>
+
+    <div>
+      <!-- 带icon的输入框:带有图标标记输入类型 -->
+      属性方式：
+      <el-input
+        v-model="input1"
+        placeholder="请选择日期"
+        suffix-icon="el-icon-date"
+      ></el-input>
+      <el-input
+        v-model="input"
+        placeholder="请输入内容"
+        prefix-icon="el-icon-search"
+      ></el-input>
+
+      slot方式：
+      <el-input v-model="input" placeholder="请选择日期">
+        <i slot="suffix" class="el-input__icon el-icon-date"></i>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="input">
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+      </el-input>
+    </div>
+
+    <div>
+      <!-- 文本域:用于输入多行文本信息，通过将type属性的值指定为textarea -->
+      <el-input
+        type="textarea"
+        :rows="2"
+        placeholder="请输入内容"
+        v-model="textarea"
+      ></el-input>
+    </div>
+
+    <div>
+      <!-- 可自适应文本高度的文本域:autosize属性可以使得文本域的高度能够根据文本内容进行调整，并且
+        autosize还可以设定一个对象，指定最小行数和最大行数
+         -->
+      <div>
+        <el-input
+          type="textarea"
+          atuosize
+          placeholder="请输入内容"
+          v-model="textarea"
+        ></el-input>
+        <div style="margin: 20px 0"></div>
+        <el-input
+          v-model="textarea"
+          placeholder="请输入内容"
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+        ></el-input>
+      </div>
+    </div>
+
+    <div>
+      <!-- 复合型输入框 :可以前置或后置元素，一般为标签或按钮-->
+      <div>
+        <el-input placeholder="请输入内容" v-model="input">
+          <template slot="prepend">Http://</template>
+        </el-input>
+      </div>
+
+      <div style="margin: 10px 0">
+        <el-input v-model="input1" placeholder="请输入内容">
+          <template slot="append">.com</template>
+        </el-input>
+      </div>
+
+      <div style="margin-top: 15px">
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+          class="input-with-select"
+        >
+          <el-select v-model="select" slot="prepend" placeholder="请选择">
+            <el-option label="餐厅名" value="1"></el-option>
+            <el-option label="订单号" value="2"></el-option>
+            <el-option label="用户电话" value="3"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search"></el-button>
+        </el-input>
+      </div>
+    </div>
+
+    <div style="width: 300px">
+      <!-- 尺寸:meduim small mini -->
+      <el-input v-model="input" placeholder="请输入内容">
+        <i slot="append" class="el-input__icon el-icon-date"></i>
+      </el-input>
+    </div>
+    <div style="width: 300px">
+      <el-input v-model="input" placeholder="请输入内容" size="meduim">
+        <i slot="prepend" class="el-input__icon el-icon-date"></i>
+      </el-input>
+    </div>
+    <div>
+      <div style="width: 300px">
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+          size="small"
+          suffix-icon="el-icon-date"
+        >
+        </el-input>
+      </div>
+      <div style="width: 300px">
+        <el-input
+          v-model="input"
+          placeholder="请输入内容"
+          size="mini"
+          prefix-icon="el-icon-date"
+        >
+        </el-input>
+      </div>
+    </div>
+
+    <div>
+      <!-- 带建议输入 -->
+      <el-row>
+        <el-col>
+          <div>激活即列出输入建议</div>
+          <el-autocomplete
+            v-model="input"
+            placeholder="请输入内容"
+            :fetch-suggestions="querySearch"
+            @select="handleSelect"
+          ></el-autocomplete>
+        </el-col>
+
+        <el-col>
+          <div>输入后匹配输入建议</div>
+          <el-autocomplete
+            v-model="input"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入内容"
+            :tigger-ob-focus="false"
+            @select="handleSelect"
+          >
+          </el-autocomplete>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div>
+      <!-- 自定义模版 ：
+      使用 scoped slot 自定义输入建议的模版；
+      该scope的参数是 item，表示当前输入建议对象
+      -->
+      <el-autocomplete v-model="input" place-holder="请输入内容" :fetch-suggestions="querySearch" @select="handleSelect">
+        <i
+          slot="suffix"
+          class="el-icon__input el-icon-edit"
+          @click="handleIconClick"
+        ></i>
+        <template slot-scope="{ item }">
+          <h2 class="name">{{ item.value }}</h2>
+          <div class="addr">{{ item.address }}</div>
+        </template>
+      </el-autocomplete>
+    </div>
+
+    <div>
+      <!-- 远程搜索:从服务器端搜索数据 -->
+      <el-autocomplete
+      v-model="input"
+      :fetch-suggestions="querySearchAsync"
+      placeholder="请输入内容"
+      @select="handleSelect">
+      </el-autocomplete>
+
+    </div>
+
+    <div>
+      <!-- 输入长度限制 
+      maxlength 和 minlength是原生属性，用来限制输入框的字符长度，其中字符长度用javascript的字符串长度统计的。
+      对于类型为text和textarea的输入框，在使用maxlength属性限制最大输入长度的同时，可以通过设置 show-word-limit属性来展示字数统计；
+      -->
+      <el-input placeholder="请输入内容" type="text" v-model="input" maxlength="10" show-word-limit></el-input>
+      <el-input placeholder="请输入内容" type="textarea" v-model="input" maxlength="30" show-word-limit>  </el-input>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      input: "",
+      input1: "",
+      input2: "",
+      input3: "",
+      input4: "",
+      textarea: "",
+      select: "",
+      restaurants: [],
+      timeout:null
+    };
+  },
+  methods: {
+    querySearch(queryString, cb) {
+      let restaurants = this.restaurants;
+      //   判断语句：如果查询字符串不为空，则results = 输入建议中符合查询字符串的数据；否则，results= 所有建议字符串数据
+      let results = queryString
+        ? restaurants.filter(this.createFilter(queryString))
+        : restaurants;
+      // 调用callback返回建议列表的数据
+      cb(results);
+    },
+    querySearchAsync(queryString, cb){
+        var restaurants = this.restaurants
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
+
+        clearTimeout(this.timeout)
+        this.timeout = setTimeout(()=>{
+            cb(results)
+        }, 3000 * Math.random())
+    },
+
+    createFilter(queryString) {
+      //返回建议列表中，第一个数据等于查询字符串的数据，也就是查询字符串是“茶”，那返回的数据就是“茶。。。。”，而不是“贡茶”一类的；
+      // 所以该函数只能按顺序查找符合用户输入顺序的内容，存在局限性
+      return (restaurant) => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
+        );
+      };
+    },
+
+    loadAll() {
+      return [
+        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
+        {
+          value: "Hot honey 首尔炸鸡（仙霞路）",
+          address: "上海市长宁区淞虹路661号",
+        },
+      ];
+    },
+
+    handleSelect(item) {
+      console.log(item);
+    },
+
+    handleIconClick(ev){
+        console.log(ev)
+    },
+
+    lostfocus(){
+        console.log("失去焦点了", this.input)
+    },
+
+    getfocus(){
+        console.log("获得焦点，请输入", this.input)
+    },
+
+    stateChange(){
+        console.log("输入完毕，失去焦点 或者 按下回车键,再次更改内容才会触发，否则不触发")
+    },
+
+    changeOnInput(){
+        console.log("每输入一个字符就输出一次", this.input)
+    },
+  },
+  mounted() {
+    this.restaurants = this.loadAll();
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+
+
+##### el-select组件
+
+```javascript
+<template>
+  <div>
+    <div>
+      <!-- 基本用法
+      el-select v-model="value" placeholder=""
+      el-option :value :label v-for :key
+      注意：el-select绑定是value 就是el-option 的:value 的值，也就是取决于el-option的：value值是多少他就是多少；
+      但是不论el-select绑定的是什么,页面显示的值就是以option的label属性决定的
+       -->
+      <el-select v-model="value" placeholder="请选择">
+        <el-option 
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+        ></el-option>
+      </el-select>
+    </div>
+
+    <div>
+        <!-- 有禁用选项 
+        el-option :disable="item.disabled"
+        -->
+        <el-select v-model="value" placeholder="请选择">
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled"
+            ></el-option>
+        </el-select>
+    </div>
+
+    <div>
+        <!-- 禁用状态：选择器不可用状态
+        el-select disabled
+         -->
+        <el-select v-model="value" placeholder="请选择" disabled>
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            ></el-option>
+        </el-select>
+    </div>
+
+    <div>
+        <!-- 可清空单选：包含清空按钮，可将选择器清空为初始状态 就是选择器后多了个 小叉叉的标志
+        el-select clearable 注意只适用于单选
+        -->
+        <el-select v-model="value" placeholder="请选择" clearable>
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            ></el-option>
+        </el-select>
+    </div>
+
+    <div>
+        <!-- 基础多选：使用性较广的基础多选，用Tag展示已选项
+            el-select multipe 注意此时 v-model绑定的值为当前选中的值 所组成的数组
+            默认情况下，选中的值会一Tag的形式展示，
+            可以设置collapse-tags属性将他们合并为一段文字，只显示第一个选中的，其余的都加1 加2.。。。。
+        -->
+        <el-select v-model="values" multiple placeholder="请选择" >
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+            ></el-option>
+        </el-select>
+
+        <el-select v-model="values" multiple placeholder="请选择" collapse-tags style="margin-left: 20px">
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+            ></el-option>
+        </el-select>
+    </div>
+
+    <div>
+        <!-- 自定义模版：可以自定义备选项 将自定义的HTML模版插入el-option的slot中即可 -->
+        <el-select v-model="value" placeholder="请选择">
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+            >
+            <span style="float: left">{{item.label}}</span>
+            <span style="float: right; color:#8492a6; font-size:13px">{{item.value}}</span>
+            </el-option>
+        </el-select>
+        <el-button @click="shuchu">shuchu</el-button>
+
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      value: "",
+      values: [],
+      options: [
+        {
+          value: "选项1",
+          label: "黄金糕",
+        },
+        {
+          value: "选项2",
+          label: "双皮奶",
+          disabled: true,
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎",
+        },
+        {
+          value: "选项4",
+          label: "龙须面",
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭",
+        },
+      ],
+    };
+  },
+  methods:{
+    shuchu(){
+        console.log(this.value)
+    }
+  },
+};
+</script>
+
+```
+
+![image-20230720153706661](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230720153706661.png)
+
+
+
+
+
+```
+选择框的属性：
+value/v-model
+multiple
+disabled
+value-key
+size
+clearable
+collapse-tags
+multiple-limit
+name
+autocomplete
+auto-complete
+placeholder
+filter-method
+remote
+remote-method
+loading
+loading-text
+no-match-text
+no-data-text
+popper-class
+reserve-keyword
+default-first-option
+popper-append-to-body
+automatic-dropdown
+选择框事件：
+change
+visiable-change
+remove-tag
+clear
+blur
+focus
+选择框插槽
+-
+prefix
+empty
+选项组的属性
+label
+disabled
+选择属性
+value
+label
+disabled
+方法
+focus
+blur
+```
+
+
+
+##### el-data-picker组件
+
+
+
+##### el-time-picker组件
+
+https://element.eleme.cn/#/zh-CN/component/time-picker
+
+```javascript
+<template>
+  <div>
+    <!-- 时间选择器 ：
+    el-time-select标签 固定时间
+    el-time-picker标签 任意时间    
+    -->
+    
+    <!-- 固定时间 -->
+    <div>
+      <el-time-select
+        v-model="value"
+        placeholder="选择时间"
+        :picker-options="{
+          start: '8:00',
+          step: '00:30',
+          end: '12:00',
+        }"
+      >
+      </el-time-select>
+    </div>
+
+    <!-- 任意时间点 -->
+    <div>
+      <!-- 通过鼠标滚轮进行选择--默认情况 -->
+      <el-time-picker
+        v-model="value1"
+        placeholder="请选择任意时间点"
+        :picker-options="{
+          selectableRange: '18:30:00 - 20:30:00',
+        }"
+      ></el-time-picker>
+
+      <!-- 通过界面上的箭头选择 -->
+      <el-time-picker
+        v-model="value2"
+        placeholder="请选择任意时间点，箭头"
+        :picker-options="{
+          selectableRange: '18:30:00 - 20:30:00',
+        }"
+        arrow-control
+      ></el-time-picker>
+    </div>
+
+    <!-- 固定时间范围：若先选择开始时间，则结束时间内备选的状态也会随之改变-->
+    <div>
+      <el-time-select
+        v-model="startTime"
+        placeholder="起始时间"
+        :picker-options="{ start: '08:30', step: '00:30', end: '12:00' }"
+      >
+      </el-time-select>
+
+      <el-time-select
+      v-model="endTime"
+      placeholder="结束时间"
+      :picker-options="{
+        start:'08:30',
+        step:'00:30',
+        end:'12:30',
+        minTime:startTime
+      }"
+      ></el-time-select>
+    </div>
+
+    <!-- 任意时间范围:isrange 属性即可选择时间范围 同样支持arrow-control属性 -->
+    <div>
+        <el-time-picker
+        is-range
+        v-model="value3"
+        range-separator="至"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
+        palceholder="选择时间范围" 
+        >
+        </el-time-picker>
+
+        <el-time-picker
+        is-range
+        arrow-control
+        v-model="value4"
+        range-separator="至"
+        start-placeholder="起始时间"
+        end-placeholder="结束时间"
+        placeholder="选择时间"
+        >
+        </el-time-picker>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      value: "",
+      value1: new Date(2016, 9, 10, 18, 30),
+      value2: new Date(2018, 2, 10, 5, 9),
+      startTime:'',
+      endTime:'',
+      value3:[new Date(2023, 7, 19, 2,18),new Date(2023,7, 19, 5,50)],
+      value4:[new Date(2023, 7,20, 12, 30), new Date(2023, 7,20, 12,40)]
+    };
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+![image-20230719142824296](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230719142824296.png)
+
+##### el-switch组件
+
+
+
+
+
+##### el-checkbox组件
+
+
+
+##### el-radio组件
+
+
+
+##### el-button组件
+
+![image-20230719000707877](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230719000707877.png)
+
+```javascript
+<template>
+  <div>
+    <div>
+      <el-button>默认按钮</el-button>
+      <el-button type="primary">主要按钮</el-button>
+      <el-button type="success">成功按钮 </el-button>
+      <el-button type="info"> 信息按钮 </el-button>
+      <el-button type="warning"> 警告按钮</el-button>
+      <el-button type="danger"> 危险按钮 </el-button>
+    </div>
+
+    <div>
+      <!-- plain:浅颜色的 -->
+      <el-button plain>朴素按钮 </el-button>
+      <el-button type="primary" plain> 主要按钮</el-button>
+      <el-button type="success" plain>成功按钮</el-button>
+      <el-button type="info" plain> 信息按钮 </el-button>
+      <el-button type="warning" plain> 警告按钮 </el-button>
+      <el-button type="danger" plain> 危险按钮</el-button>
+    </div>
+
+    <div>
+      <!-- round 表示圆角 -->
+      <el-button round>圆角按钮</el-button>
+      <el-button type="primary" round>主要按钮</el-button>
+      <el-button type="success" round> 成功按钮 </el-button>
+      <el-button type="info" round> 信息按钮 </el-button>
+      <el-button type="warning" round> 警告按钮 </el-button>
+      <el-button type="danger" round> 危险按钮 </el-button>
+    </div>
+
+    <div>
+      <!-- circle 表示圆； el-icon-xx 表示：图标库 -->
+      <el-button icon="el-icon-search" circle></el-button>
+      <el-button type="primary" icon="el-icon-edit" circle> </el-button>
+      <el-button type="success" icon="el-icon-check" circle> </el-button>
+      <el-button type="info" icon="el-icon-message" circle> </el-button>
+      <el-button type="warning" icon="el-icon-star-off" circle> </el-button>
+      <el-button type="danger" icon="el-icon-delete" circle> </el-button>
+    </div>
+
+    <div class="disabled-button">
+      <!-- disabled：禁用的按钮 -->
+      <div>
+        <el-button disabled> 默认按钮 </el-button>
+        <el-button type="primary" disabled> 主要按钮 </el-button>
+        <el-button type="success" diabled> 成功按钮</el-button>
+        <el-button type="info" disabled> 信息按钮</el-button>
+        <el-button type="warning" disabled> 警告按钮 </el-button>
+        <el-button type="danger" disabled> 危险按钮 </el-button>
+      </div>
+
+      <div>
+        <el-button plain disabled>朴素按钮</el-button>
+        <el-button plain disabled type="primary">主要按钮</el-button>
+        <el-button type="success" disabled plain>成功按钮</el-button>
+        <el-button type="info" plain disabled>信息按钮</el-button>
+        <el-button type="warning" plain disabled>警告按钮</el-button>
+        <el-button type="danger" plain disabled> 危险按钮</el-button>
+      </div>
+    </div>
+
+    <div class="text_button">
+      <!-- 文字按钮 -->
+      <el-button type="text">文字按钮</el-button>
+      <el-button type="text" disabled>禁用文字按钮</el-button>
+    </div>
+
+    <div>
+      <!-- 图标按钮：带图标的按钮可以增强辨识度（有文字） 或 节省空间（无文字） -->
+      <el-button type="primary" icon="el-icon-edit"></el-button>
+      <el-button type="primary" icon="el-icon-share"></el-button>
+      <el-button type="primary" icon="el-icon-delete"></el-button>
+      <el-button type="primary" icon="el-icon-search">搜索</el-button>
+      <el-button type="primary"
+        >上传 <i class="el-icon-upload el-icon--right"></i
+      ></el-button>
+    </div>
+
+    <div>
+      <!-- 按钮组：以按钮组的方式出现，常用于多项类似操作;使用<el-button-group>标签来嵌套你的按钮 -->
+      <el-button-group>
+        <el-button type="primary" icon="el-icon-arrow-left">上一页</el-button>
+        <el-button type="primary"
+          >下一页<i class="el-icon-arrow-right el-icon--right"></i
+        ></el-button>
+      </el-button-group>
+
+      <el-button-group>
+        <el-button type="primary" icon="el-icon-edit"></el-button>
+        <el-button type="primary" icon="el-icon-share"></el-button>
+        <el-button type="primary" icon="el-icon-delete"></el-button>
+      </el-button-group>
+
+      <div>
+        <!-- 加载中：点击按钮后进行数据加载操作，在按钮上显示加载状态 -->
+        <el-button type="primary" :loading="true">加载中</el-button>
+      </div>
+
+      <div>
+        <!-- 不同尺寸：Button组件提供了默认值以外的三种尺寸，可以在不同的场景下选择合适的按钮尺寸 -->
+        <!-- 额外的尺寸：medium， small，mini， 通过size属性来设置他们 -->
+
+        <div>
+          <el-button>默认按钮</el-button>
+          <el-button size="medium">中等按钮</el-button>
+          <el-button size="small">小型按钮</el-button>
+          <el-button size="mini"> 超小型按钮</el-button>
+        </div>
+        <div>
+          <el-button round>默认按钮</el-button>
+          <el-button round size="medium"> 中等按钮</el-button>
+          <el-button round size="small"> 小型按钮 </el-button>
+          <el-button round size="mini"> 超小型按钮 </el-button>
+        </div>
+
+      </div>
+
+      <div>
+        <!-- 默认聚焦 -->
+        <el-button></el-button>
+        <el-button autofocus></el-button>
+        <!-- 原生type属性 -->
+        <el-button native-type="button"></el-button>
+        <el-button native-type="submit">提交</el-button>
+        <el-button native-type="reset">重置</el-button>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+</style>
+```
+
+![image-20230719000648969](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230719000648969.png)
+
+##### Form表单的使用
+
+​	由 输入框、选择器、单选框、多选框等控件组成，以收集、校验、提交数据。
+
+1. 典型的表单：包括各种表单项，比如输入框、选择器、开关、单选框、多选框等
+
+![image-20230718220518419](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230718220518419.png)
+
+![image-20230718221045222](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230718221045222.png)
+
+![image-20230720133726410](/Users/dingmiao/Library/Application Support/typora-user-images/image-20230720133726410.png)
+
+
+
+```
+1、el-form的校验方法validate() 对整个表单字段进行校验
+调用方式this.$refs[formName].validate(回调函数) 回调函数有两个参数，第一个参数是：是否校验成功（布尔值），第二个参数是：未通过校验的字段（如上图输出）；
+如果validate中不传入参数，则返回一个promise
+2、如果是校验一部分表字段的话 使用 validateField（）方法
+
+3、表单重置的方法 resetFields() 对整个表单进行重置，将所有字段值重置为初始值并转移校验结果；
+一般用于重置按钮绑定的回调函数中；
+
+4、clearValidate() 移除表单项的校验结果
+调用方法：
+如果传入的值为要移除的表单项的prop属性（prop:age 其中age为需要校验的字段名），或者prop组成的数组，那么就移除对应的表单项的校验结果；
+如果不传入参数，就移除整个表单的校验结果；
+
+5、https://github.com/yiminghe/async-validator 异步校验没看
+```
+
+```
+表单的属性：
+model
+rules
+inline
+label-position
+label-width
+label-suffix
+hide-required-asterisk
+show-message
+status-icon
+validate-on-rule-change
+size
+disabled
+
+表单的方法:
+validate
+validateField
+resetFields
+clearValidate
+
+表单的事件：
+validate
+
+表单项的属性：
+prop
+label
+label-width
+required
+rules
+error
+show-message
+inline-message
+size
+
+表单项的插槽：
+-
+label
+
+表单项的作用域插槽：
+error
+
+表单项的方法：
+resetFiled
+clearValidate
+```
+
+
+
+
+
+# 7月19日：
+
+##### ~~1. select组件~~
+
+~~#### 2.form:例子《重点》+api《尽量理解》~~
+
+##### 3.抽屉里的内容改成form
+
+##### 4.右下角抽屉 最下面两个按钮
+
+新增之后 是form 有校验规则
+
+​	没填
+
+​	填了
+
+抽屉关上新增之后
+
+
+
+1. ~~**el-select,el-form**~~
+2. ~~**抽屉里的内容改成form形式**~~
+3. ~~**抽屉下面放两个按钮，看看怎么实现**~~
+
+```javascript
+ dataValue: "",
+      nameValue: "",
+      addressValue: "",
+      list: [],
+      addressValue1: [],
+
+<div>
+        <el-date-picker
+          v-model="dataValue"
+
+          value-format="yyyy-MM-dd"
+          placeholder="请选择日期"
+          align="right"
+          type="date"
+          size="small"
+          :picker-options="pickerOptions"
+        ></el-date-picker>
+
+        <el-input
+          v-model="nameValue"
+          placeholder="请输入您的姓名"
+          size="small"
+          width="10px"
+        ></el-input>
+
+        <el-autocomplete
+          size="small"
+          v-model="addressValue"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入您的地址"
+          @select="handleSelect"
+        ></el-autocomplete>
+        <el-input v-model="addressValue" placeholder="请输入您的地址"></el-input>
+      </div>
+
+      <div style="margin-top: 40px">
+        <el-button type="primary" @click="addDate">上传</el-button>
+        <el-button @click="handleCancel">取消</el-button>
+      </div>
+```
+
+```javascript
+  <template>
+  <div>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column
+        v-for="item in column"
+        :key="item.prop"
+        :prop="item.prop"
+        :label="item.label"
+        :width="item.width"
+      >
+      </el-table-column>
+    </el-table>
+
+    <el-drawer
+      ref="drawer"
+      title="添加数据"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+      @closed="clearData"
+    >
+      <!-- 表单 
+    日期：
+    姓名：
+    地址：
+    提交按钮：取消按钮：
+    -->
+      <div class="drawer_content">
+        <el-form
+          ref="form"
+          label-width="80px"
+          label-position="right"
+          :model="form"
+          :rules="rules"
+        >
+          <el-form-item label="日期" prop="date">
+            <el-date-picker
+              style="width: 100%"
+              v-model="form.date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择日期"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
+          </el-form-item>
+
+          <el-form-item label="地址" prop="address">
+            <el-autocomplete
+              style="width:100%"
+              v-model="form.address"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入您的地址"
+              @select="handleSelect"
+            ></el-autocomplete>
+          </el-form-item>
+        </el-form>
+
+        <div class="demo-drawer__footer">
+          <el-button type="primary" @click="onSubmit" class="submit_button"
+            >提交并退出</el-button
+          >
+          <el-button @click="clearData" class="reset_button">重置</el-button>
+          <!-- <el-row>
+            <el-col :span="11">
+              <div>
+                <el-button type="primary" @click="onSubmit">提交并退出</el-button>
+              </div>
+            </el-col>
+            <el-col :span="2"><div></div></el-col>
+            <el-col :span="11">
+              <div><el-button @click="clearData">重置</el-button></div>
+            </el-col>
+          </el-row> -->
+        </div>
+      </div>
+    </el-drawer>
+
+    <button @click="open">添加数据</button>
+  </div>
+</template>
+
+  <script>
+export default {
+  data() {
+    // var checkData = function (rule, value, callback) {
+    //   if (value === "") {
+    //     callback(new Error("请选择日期"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
+    // var checkName = function (rule, value, callback) {
+    //   if (value === "") {
+    //     callback(new Error("请输入姓名"));
+    //   } else if (value.length === 1) {
+    //     callback(new Error("姓名至少包含两位汉字，请修改"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
+    return {
+      drawer: false,
+      direction: "ltr",
+      form: {
+        date: "",
+        name: "",
+        address: "",
+      },
+      rules: {
+        date: [{ required: true, message: "请选择日期", trigger: "blur" }],
+        name: [
+          { required: true, message: "请输入您的姓名", trigger: "blur" },
+          { max: 5, min: 1, message: "请输入长度为1-5的姓名", trigger: "blur" },
+        ],
+        address: [
+          { required: true, message: "请输入地址", trigger: "blur" },
+          { max: 10, min: 2, message: "长度在2-10之间", trigger: "change" },
+        ],
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            },
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            },
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            },
+          },
+        ],
+      },
+      column: [
+        {
+          prop: "date",
+          label: "日期",
+          width: "180",
+        },
+        {
+          prop: "name",
+          label: "姓名",
+          width: "180",
+        },
+        {
+          prop: "address",
+          label: "地址",
+          width: "",
+        },
+      ],
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄",
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1519 弄",
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄",
+        },
+      ],
+    };
+  },
+
+  methods: {
+    // 渲染数据
+    // showList() {
+    //   if (JSON.parse(window.localStorage.getItem("list"))) {
+    //     this.list = JSON.parse(window.localStorage.getItem("list"));
+    //     console.log(this.list);
+    //     this.tableData.push(this.list);
+    //   }
+    // },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
+    },
+    handleCancel(done) {
+      this.$confirm("确认取消？")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
+    },
+    onSubmit() {
+      let count = 0;
+      const newData = {
+        date: this.form.date,
+        name: this.form.name,
+        address: this.form.address,
+      };
+      //  this.tableData.push(newData);
+      //  this.$refs.drawer.closeDrawer();
+      // 如果表单中数据有空的就不提交，然后提示用户填写数据
+      Object.keys(newData).forEach(function (value) {
+        if (newData[value] !== "") {
+          count += 1;
+        }
+      });
+      if (count === Object.keys(this.form).length) {
+        this.tableData.push(newData);
+        count = 0;
+      }
+      this.$refs.drawer.closeDrawer();
+
+      // console.log(this.list);
+      // this.list.push(newData);
+      // localStorage.setItem("list", JSON.stringify(this.list));
+      // this.showList();
+    },
+    open() {
+      this.drawer = true;
+    },
+    querySearch(queryString, cb) {
+      let address = this.addressValue1;
+      let result = queryString
+        ? address.filter(this.createFilter(queryString))
+        : address;
+      // 调用callback 返回建议列表数据
+      cb(result);
+    },
+    createFilter(queryString) {
+      return (ad) => {
+        return ad.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
+      };
+    },
+    loadAll() {
+      return [{ value: "长宁区新渔路144号" }];
+    },
+    handleSelect(item) {
+      console.log(item);
+    },
+    clearData() {
+      this.form = {};
+    },
+  },
+
+  mounted() {
+    this.addressValue1 = this.loadAll();
+  },
+  // created() {
+  //   if(this.tableData){
+
+  //   }
+  //   this.showList();
+  // },
+};
+</script>
+<style >
+/* .drawer_content{
+  display:flex;
+  align-items:center;
+  justify-content: center;
+} */
+.demo-drawer__footer {
+  width:100%;
+  /* background:black; */
+  padding-top: 600px;
+  text-align: center;
+}
+.submit_button {
+  height: 50px;
+  width: 49%;
+}
+.reset_button {
+  height: 50px;
+  width: 49%;
+}
+
+</style>
+```
+
+
+
+## 以完成任务为优先
+
+# 7月20日：
+
+##### 核心任务：组件间通信
+
+1. ##### 父传子
+
+父组件的子组件标签绑定要传
+
+1. ##### 子传父 （自定义事件的写法）
+2. ##### 父调子（方法、data里的数据）
+
+  ##### 时间充裕，就看一下vue3的这几个怎么写
+
+生命周期：
+
+https://blog.csdn.net/su2231595742/article/details/115186957
+
+https://juejin.cn/post/6924496352789397518
+
+https://juejin.cn/post/7024074527420203044
+
+
+
+增删改查
+
+```javascript
+<template>
+  <div>
+    <el-table :data="tableData" @row-click="rowClick"  style="width: 100%">
+      <el-table-column
+        v-for="item in column"
+        :key="item.prop"
+        :prop="item.prop"
+        :label="item.label"
+        :width="item.width"
+      >
+      </el-table-column>
+    </el-table>
+
+    <el-drawer
+      ref="drawer"
+      title="添加数据"
+      :visible.sync="drawer"
+      :direction="direction"
+    >
+      <!-- 表单 
+    日期：
+    姓名：
+    地址：
+    提交按钮：取消按钮：
+    -->
+      <div class="drawer_content">
+        <el-form
+          ref="form"
+          label-width="80px"
+          label-position="right"
+          :model="form"
+          :rules="rules"
+        >
+          <el-form-item label="日期" prop="date">
+            <el-date-picker
+              style="width: 100%"
+              v-model="form.date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择日期"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </el-form-item>
+
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
+          </el-form-item>
+
+          <el-form-item label="地址" prop="addressCode">
+            <el-select v-model="form.addressCode" @change="changeAddress">
+              <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+
+        <div class="demo-drawer__footer">
+          <el-button
+            type="primary"
+            @click="submitForm('form')"
+            class="submit_button"
+            >提交并退出</el-button
+          >
+          <el-button @click="resetForm" class="reset_button">重置</el-button>
+        </div>
+      </div>
+    </el-drawer>
+
+    <el-button type="primary" @click="open">添加数据</el-button>
+    <el-button type="success" :disabled="editDisabled" @click="edit">编辑</el-button>
+    <el-button type="danger" :disabled="editDisabled" @click="handleDelete">编辑</el-button>
+  </div>
+</template>
+
+  <script>
+export default {
+  data() {
+    return {
+      options: [
+        {
+          value: 'shanghai',
+          label: '上海'
+        },
+        {
+          value: 'beijing',
+          label: '北京'
+        }
+      ],
+      editDisabled: true,
+      clickRow: {},
+      drawer: false,
+      direction: 'ltr',
+      form: {
+        date: '',
+        name: '',
+        addressCode: '',
+        addressName: ''
+      },
+      rules: {
+        date: [{ required: true, message: '请选择日期', trigger: 'blur' }],
+        name: [
+          { required: true, message: '请输入您的姓名', trigger: 'blur' }
+        ],
+        addressCode: [
+          { required: true, message: '请输入地址', trigger: 'blur' }
+        ]
+      },
+      column: [
+        {
+          prop: 'date',
+          label: '日期',
+          width: '180'
+        },
+        {
+          prop: 'name',
+          label: '姓名',
+          width: '180'
+        },
+        {
+          prop: 'addressName',
+          label: '地址',
+          width: ''
+        }
+      ],
+      tableData: [
+        {
+          id: 1,
+          date: '2016-05-02',
+          name: '王小一',
+          addressName: '上海',
+          addressCode: 'shanghai'
+        },
+        {
+          id: 2,
+          date: '2016-05-04',
+          name: '王小二',
+          addressName: '北京',
+          addressCode: 'beijing'
+        },
+        {
+          id: 3,
+          date: '2016-05-01',
+          name: '王小三',
+          addressName: '北京',
+          addressCode: 'beijing'
+        }
+      ],
+      status: 'add'
+    }
+  },
+  methods: {
+    // 修改地址事件
+    changeAddress(e) {
+      this.form.addressName = this.options.filter(item => item.value === e)[0].label // 利用change赋值
+    },
+    // 保存 新增、编辑
+    submitForm() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.status === 'add') {
+            this.tableData.push(JSON.parse(JSON.stringify(this.form))) // 新增，深拷贝
+          } else {
+            // 将点击行的数据用form覆盖
+            this.tableData.forEach(item => {
+              if (item.id === this.clickRow.id) {
+                item.date = this.form.date
+                item.name = this.form.name
+                item.addressCode = this.form.addressCode
+                item.addressName = this.form.addressName
+              }
+            })
+          }
+
+          this.drawer = false
+        } else {
+          alert('完善表单')
+        }
+      })
+    },
+    // 添加数据方法
+    open() {
+      this.status = 'add'
+      this.drawer = true // 打开抽屉，但是内部并没有渲染，所以拿不到form
+      // this.resetForm() // 如果直接调重置方法，找不到form报错。
+      this.$nextTick(() => { // 在下一次dom刷新后调用
+        this.resetForm()
+      })
+    },
+    // 点击行事件
+    rowClick(row) {
+      this.clickRow = JSON.parse(JSON.stringify(row)) // 拿到行数据
+      console.log(this.clickRow, 'this.clickRow')
+      this.editDisabled = false
+    },
+    // 编辑方法
+    edit() {
+      this.status = 'edit'
+      this.drawer = true // 打开抽屉
+      // 需要把行数据赋给form
+      this.form = this.clickRow
+    },
+    // 删除方法
+    handleDelete() {
+      this.tableData = this.tableData.filter(item => item.id !== this.clickRow.id)
+    },
+    resetForm() {
+      this.$refs['form'].resetFields()
+    }
+  },
+
+  mounted() {
+  }
+}
+</script>
+<style >
+/* .drawer_content{
+  display:flex;
+  align-items:center;
+  justify-content: center;
+} */
+.demo-drawer__footer {
+  width: 100%;
+  /* background:black; */
+  padding-top: 600px;
+  text-align: center;
+}
+.submit_button {
+  height: 50px;
+  width: 49%;
+}
+.reset_button {
+  height: 50px;
+  width: 49%;
+}
+</style>
+```
+
+# 7月21日
+
+##### 1、vue3中的组件之间是如何进行通信的？
+
+##### 2、button六个样式 把公共样式提炼出来 然后六个样式中有涉及公共样式的就引用公共样式
+

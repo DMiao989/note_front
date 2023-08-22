@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义Promise测试</title>
+</head>
+<body>
+    <!-- <script src="../lib/promisetest.js"></script> -->
+    <script src="../lib/Promise_class.js"></script>
+    <!-- <script>
+        // 先指定回调函数，然后更改状态；因为Promis构造函数中，我们是先定义了函数resolve()和 reject()函数
+        // 而这两个函数中又调用了回调函数onResolve() 和 onReject()，所以我们必须要先指定回调函数，然后再改变状态
+        // 方法是，在执行器函数 给改变状态的resolve函数添加延时，让他稍后改变状态，先指定回调函数
+        const p = new Promise((resolve, reject) => { //执行器函数exector,传入两个函数类型的参数，分别是resolve()函数和 reject()函数
+            setTimeout(() => {
+                // resolve(1)
+                reject(1)
+            }, 100);
+        }).then(
+            (value) => {
+                console.log("onResolved1()", value)
+            }, 
+            (reason) => {
+                console.log("onRejected1()", reason)
+                // return 3
+                // throw 4
+                return new Promise((resolve, reject) => {reject(5)})
+            } 
+         
+        ).then(
+            (value) => {
+                console.log("onResolved2()", value)
+            }, 
+            (reason) => {
+                console.log("onRejected2()", reason)
+                // throw 6
+            }
+        ).catch(
+            (reason) => {
+                console.log("onRejected3()", reason)
+            }
+        )
+    </script> -->
+    <script>
+       const p1 = Promise.resolve(1)
+       const p2 = Promise.resolve(Promise.resolve(2)) //p2应该是成功的 rejcted 值为2 的promise
+       const p3 = Promise.resolve(Promise.reject(3))
+       const p5 = Promise.reject(6)
+    //    p1.then(value => console.log(value))
+    //    p2.then(value => console.log(value))
+    //    p3.then(undefined,reason => console.log(reason))
+
+        // const pRace = Promise.race([ 7, p3, p2, p1]) //先输出p5 
+        // pRace.then(
+        //     values => console.log("onResolved",values),
+        //     reason => console.log("onRejected",reason)
+        // )
+
+        const p7 = Promise.resolveDelay(66, 200)
+        const p8 = Promise.rejectDelay(88, 200)
+        p7.then(
+            value => console.log(value)
+        )
+        // p8.then(undefined,
+        //     reason => console.log(reason)
+        // )
+        p8.catch(
+            reason => console.log(reason)
+        )
+    </script>
+
+</body>
+</html>
